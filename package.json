@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "main": "server.js",
   "dependencies": {
+    "axios": "^0.16.2",
+    "babel-cli": "^6.26.0",
     "body-parser": "~1.0.1",
     "express": "^4.10.6",
     "mysql": "^2.13.0",
@@ -66,7 +68,6 @@
   "author": {
     "name": "Jason Smith",
     "email": "jasonsmith7272@gmail.com",
-
     "url": null
   },
   "scripts": {
