@@ -1,12 +1,14 @@
 import {Database} from '../../../../database';
 import {ffballServiceSQL} from './ffballServiceSQL';
 
+console.log(process.env);
 const sqlConfigFF = {
   DB_SQL_URL: process.env.DB_SQL_URL || 'jdbc:mysql://localhost/FantasyFootball',
   DB_SQL_USERNAME: process.env.DB_SQL_USERNAME || 'ffballuser',
   DB_SQL_PASSWORD: process.env.DB_SQL_PASSWORD || 'P@ssword!',
   DB_SQL_OPTIONS: null
 };
+console.log('CONFIG', sqlConfigFF);
 const databaseFF = new Database(sqlConfigFF);
 
 const ffballServicesV1 = {
