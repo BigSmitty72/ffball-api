@@ -17,6 +17,7 @@ const routes = require('./src/routes');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 // let database;
 
@@ -33,6 +34,7 @@ const bodyParser = require('body-parser');
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors());
 
 const port = process.env.PORT || 8080;        // set our port
 
