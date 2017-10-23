@@ -76,29 +76,56 @@ export function ffballServiceSQL (request, service) {
 			break;
 		}
 		case 'getTrophyCount': {
-			return `
-				SELECT
-					S.teamId,
-					S.ownerName,
-				    COUNT(trophyDescription) AS Trophies,
+			const trophySql = `
+				SELECT DISTINCT
+					CASE
+						WHEN MONTH(trophyDate) < 6 THEN YEAR(trophyDate) - 1
+				        ELSE YEAR(trophyDate)
+					END AS season,
+					s.teamId,
+					s.ownerName,
 				    SUM(CASE 
-						WHEN trophyDescription LIKE '%hi%h%score%' THEN 1
-				        ELSE 0
-					END) AS HighScoreTrophies,
-				    SUM(CASE 
+						WHEN trophyDescription LIKE '%hi%score%' THEN 1
+						ELSE 0
+					END) AS highScore,
+					SUM(CASE 
 						WHEN trophyDescription LIKE '%Last%Man%' THEN 1
-				        ELSE 0
-					END) AS LastManStandingTrophies,
-				    SUM(CASE 
+						ELSE 0
+					END) AS lastManStanding,
+					SUM(CASE 
 						WHEN trophyDescription LIKE '%League%Champion%' THEN 1
-				        ELSE 0
-					END) AS ChampionshipTrophies
-				FROM t_Trophies T
-				JOIN t_Standings S ON T.teamId = S.teamId AND T.leagueId = S.leagueId
-				WHERE S.leagueId = ${request.leagueId}
-				${getSeasonIdWhereClause(request.seasonId, 'T')}
-				GROUP BY S.teamId;`;
+						ELSE 0
+					END) AS firstPlace,
+				    SUM(CASE 
+						WHEN trophyDescription LIKE '%Second%' THEN 1
+						ELSE 0
+					END) AS secondPlace,
+				    SUM(CASE 
+						WHEN trophyDescription LIKE '%Third%' THEN 1
+						ELSE 0
+					END) AS thirdPlace
+				FROM t_Trophies t
+				JOIN t_Standings s ON t.leagueId = s.leagueId AND t.teamId = s.teamId
+				WHERE t.leagueId = ${request.leagueId}
+				${ request.seasonId && !request.seasonId.toString().toLowerCase().includes('all') ? 'AND t.trophyDate BETWEEN \'' + request.seasonId + '-06-01\' AND \'' + (Number(request.seasonId) + 1) + '-06-01\'' : '' }
+				GROUP BY 1, s.teamId, s.ownerName
+				ORDER BY 1 DESC, ownerName;`;
+			return trophySql;
 			break;
+		}
+		case 'getTrophiesByTeam': {
+			return `SELECT DISTINCT
+				T.teamId,
+			    T.trophyDescription,
+			    T.trophyDate,
+			    CASE 
+					WHEN MONTH(trophyDate) < 6 THEN YEAR(trophyDate) - 1
+			        ELSE YEAR(trophyDate)
+				END AS season
+			FROM t_Trophies T
+			WHERE T.leagueId = ${request.leagueId}
+			${ request.seasonId && !request.seasonId.toString().toLowerCase().includes('all') ? 'AND t.trophyDate BETWEEN \'' + request.seasonId + '-06-01\' AND \'' + (Number(request.seasonId) + 1) + '-06-01\'' : '' }
+			ORDER BY teamId, trophyDate;`;
 		}
 		case 'getTeamPossiblePoints': {
 			let sqlStr = `SELECT

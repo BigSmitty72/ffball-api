@@ -6,7 +6,11 @@ const routes = require('express').Router();
 routes.use(function (req, res, next) {
 	//TODO: Logging
 	//TODO: API Validation?
-	console.log('request made: logging'); //, res);
+	if (req.headers['x-ffball-proxyversion'] !== '1') {
+		res.status(403).send('Unauthorized!');
+		console.log('Unauthorized request');
+		return;
+	}
 	// Website you wish to allow to connect
 	res.setHeader('Access-Control-Allow-Origin', process.env.FFBALL_URL || 'http://localhost:3000');
 
@@ -69,6 +73,11 @@ routes.post('/ffball/v1/TeamPossiblePoints', async function(req, res) {
 
 routes.post('/ffball/v1/TeamWinnings', async function(req, res) {
 	const response = await ffballServicesV1.getTeamWinnings(req.body);
+	res.send(response);
+});
+
+routes.post('/ffball/v1/TrophiesByTeam', async function(req, res) {
+	const response = await ffballServicesV1.getTrophiesByTeam(req.body);
 	res.send(response);
 });
 
