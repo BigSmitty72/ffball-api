@@ -2,11 +2,13 @@ import ffballServicesV1 from '../services/v1/ffball/ffballServicesV1';
 import rocketLeagueServicesV1 from '../services/v1/rocketLeague/rocketLeagueServicesV1';
 const routes = require('express').Router();
 //const router = express.Router();
+require('dotenv').config({ silent: true });
 
 routes.use(function (req, res, next) {
 	//TODO: Logging
 	//TODO: API Validation?
-	if (req.headers['x-ffball-proxyversion'] !== '1') {
+	const { API_VALIDATION_HEADER } = process.env;
+	if (req.headers[API_VALIDATION_HEADER] !== '1') {
 		res.status(403).send('Unauthorized!');
 		console.log('Unauthorized request');
 		return;
