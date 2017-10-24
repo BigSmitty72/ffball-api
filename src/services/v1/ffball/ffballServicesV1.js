@@ -1,22 +1,15 @@
 import { Database } from '../../../../database';
 import { ffballServiceSQL } from './ffballServiceSQL';
 import { capFirstLetter, compareSort, getLeaguePayout } from './common';
-
-// const sqlConfigFF = {
-//   DB_SQL_URL: process.env.DB_SQL_URL || 'jdbc:mysql://ffballsql01.cuoa8z2qgrrc.us-east-2.rds.amazonaws.com/FantasyFootball',
-//   DB_SQL_USERNAME: process.env.DB_SQL_USERNAME || 'ffballDBA',
-//   DB_SQL_PASSWORD: process.env.DB_SQL_PASSWORD || 'Starcraft5',
-//   DB_SQL_OPTIONS: null
-// };
+require('dotenv').config({ silent: true });
 
 const sqlConfigFF = {
-  DB_SQL_URL: process.env.DB_SQL_URL || 'jdbc:mysql://localhost/FantasyFootball',
-  DB_SQL_USERNAME: process.env.DB_SQL_USERNAME || 'ffballuser',
-  DB_SQL_PASSWORD: process.env.DB_SQL_PASSWORD || 'P@ssword!',
+  DB_SQL_URL: process.env.DB_SQL_URL,
+  DB_SQL_USERNAME: process.env.DB_SQL_USERNAME,
+  DB_SQL_PASSWORD: process.env.DB_SQL_PASSWORD,
   DB_SQL_OPTIONS: null
 };
-// console.log(process.env);
-// console.log('CONFIG', sqlConfigFF);
+
 const databaseFF = new Database(sqlConfigFF);
 
 const ffballServicesV1 = {
